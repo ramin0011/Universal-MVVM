@@ -7,16 +7,16 @@ using UniMvvm.Services.Interfaces;
 using UniMvvm.ViewModels;
 using Xamarin.Forms;
 
-namespace UniMvvm.Engine
+namespace UniMvvm
 {
     public class UniMvvmEngine
     {
-        public static Task Run(List<NavigationMapping> mappings, MasterDetailPage mainPage, ContentPage loginPage,
-            bool checkAuthentication = false)
+        public static Task Run(UniMvvmOptions options)
         {
-            ViewModelLocator.Init(mappings);
+            GlobalSettings.AuthenticationEndpoint = options.AuthenticationEndpoint;
+            ViewModelLocator.Init(options.Mappings);
             var navigationService = ViewModelLocator.Instance.Resolve<INavigationService>();
-            return navigationService.InitializeAsync(mainPage, loginPage, checkAuthentication);
+            return navigationService.InitializeAsync(options.MainPage,options.LoginPage,options.CheckAuthentication);
         }
         public static void AdaptColorsToHexString()
         {
@@ -32,6 +32,14 @@ namespace UniMvvm.Engine
                 }
             }
         }
+    }
+    public class UniMvvmOptions
+    {
+        public List<NavigationMapping> Mappings { get; set; }
+        public MasterDetailPage MainPage { get; set; }
+        public ContentPage LoginPage { get; set; }
+        public bool CheckAuthentication { get; set; }= false;
+        public string AuthenticationEndpoint { get; set; }
     }
 }
 

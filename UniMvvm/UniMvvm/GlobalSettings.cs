@@ -1,7 +1,9 @@
-﻿namespace UniMvvm
+﻿using Xamarin.Forms;
+
+namespace UniMvvm
 {
     class GlobalSettings
     {
-        public const string AuthenticationEndpoint = "http://grabzibackend.azurewebsites.net/";
+        public static string AuthenticationEndpoint = null;
     }
 }
