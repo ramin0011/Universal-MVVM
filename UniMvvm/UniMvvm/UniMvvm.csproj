@@ -59,7 +59,6 @@
     <Compile Include="Helpers\Settings.cs" />
     <Compile Include="Models\Authentication\AuthenticationRequest.cs" />
     <Compile Include="Models\Authentication\AuthenticationResponse.cs" />
-    <Compile Include="Models\Product.cs" />
     <Compile Include="Pages\Page1.xaml.cs">
       <DependentUpon>Page1.xaml</DependentUpon>
     </Compile>

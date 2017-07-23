@@ -23,31 +23,24 @@ namespace UniMvvm.DataServices.Base
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
                 NullValueHandling = NullValueHandling.Ignore
             };
-
             _serializerSettings.Converters.Add(new StringEnumConverter());
         }
 
         public async Task<TResult> GetAsync<TResult>(string uri)
         {
-            var httpClient = CreateHttpClient();
+            var httpClient = CreateHttpClient;
             var response = await httpClient.GetAsync(uri);
-
             await HandleResponse(response);
-
             string serialized = await response.Content.ReadAsStringAsync();
             TResult result = await Task.Run(() => JsonConvert.DeserializeObject<TResult>(serialized, _serializerSettings));
-
             return result;
         }
 
-        public Task<TResult> PostAsync<TResult>(string uri, TResult data)
-        {
-            return PostAsync<TResult, TResult>(uri, data);
-        }
+        public Task<TResult> PostAsync<TResult>(string uri, TResult data) => PostAsync<TResult, TResult>(uri, data);
 
         public async Task<TResult> PostAsync<TRequest, TResult>(string uri, TRequest data)
         {
-            var httpClient = CreateHttpClient();
+            var httpClient = CreateHttpClient;
             string serialized = await Task.Run(() => JsonConvert.SerializeObject(data, _serializerSettings));
             var response = await httpClient.PostAsync(uri, new StringContent(serialized, Encoding.UTF8, "application/json"));
 
@@ -65,7 +58,7 @@ namespace UniMvvm.DataServices.Base
 
         public async Task<TResult> PutAsync<TRequest, TResult>(string uri, TRequest data)
         {
-            var httpClient = CreateHttpClient();
+            var httpClient = CreateHttpClient;
             string serialized = await Task.Run(() => JsonConvert.SerializeObject(data, _serializerSettings));
             var response = await httpClient.PutAsync(uri, new StringContent(serialized, Encoding.UTF8, "application/json"));
 
@@ -76,13 +69,14 @@ namespace UniMvvm.DataServices.Base
             return await Task.Run(() => JsonConvert.DeserializeObject<TResult>(responseData, _serializerSettings));
         }
 
-        private HttpClient CreateHttpClient()
+        private HttpClient CreateHttpClient
         {
-            var httpClient = new HttpClient();
-
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            return httpClient;
+            get
+            {
+                var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                return httpClient;
+            }
         }
 
         private async Task HandleResponse(HttpResponseMessage response)
@@ -90,12 +84,8 @@ namespace UniMvvm.DataServices.Base
             if (!response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-
                 if (response.StatusCode == HttpStatusCode.Forbidden || response.StatusCode == HttpStatusCode.Unauthorized)
-                {
                     throw new Exception(content);
-                }
-
                 throw new HttpRequestException(content);
             }
         }
