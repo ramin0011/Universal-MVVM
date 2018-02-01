@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Practices.ObjectBuilder2;
 using UniMvvm.DataServices;
 using UniMvvm.DataServices.Base;
 using UniMvvm.DataServices.Interfaces;
 using UniMvvm.Services;
 using UniMvvm.Services.Interfaces;
-using Microsoft.Practices.Unity;
+using Unity;
+using Unity.Lifetime;
 
 namespace UniMvvm.ViewModels
 {
