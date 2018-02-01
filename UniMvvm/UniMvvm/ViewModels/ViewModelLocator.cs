@@ -12,6 +12,10 @@ namespace UniMvvm.ViewModels
 {
     public class ViewModelLocator
     {
+        private ViewModelLocator()
+        {
+            
+        }
         private readonly IUnityContainer _unityContainer;
         public static List<NavigationMapping> Mappings { get; private set; }
         private static  ViewModelLocator _instance=null;
@@ -31,6 +35,7 @@ namespace UniMvvm.ViewModels
                 Instance=new ViewModelLocator(mappings);
         }
 
+       
         protected ViewModelLocator(List<NavigationMapping> mappings)
         {
             Mappings = mappings;
