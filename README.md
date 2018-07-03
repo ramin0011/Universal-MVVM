@@ -1,2 +1,2 @@
 # Universal-MVVM
-Universal MVVM - Targeting Mulpitle Platofms Developed By C#
+Universal MVVM - Targeting Mulpitle Platofm Applications Developed By C# and Xamarin
