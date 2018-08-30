@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UniMvvm.DataServices.Interfaces;
 using UniMvvm.Pages;
@@ -37,23 +38,23 @@ namespace UniMvvm.Services
 
         public Task InitializeAsync(MasterDetailPage mainPage,ContentPage loginPage,bool checkAuthentication=false)
         {
-            var mappings = ViewModelLocator.Mappings;
             this.LaunchingPage = mainPage;
             this.LoginPage = loginPage;
 
             _mappings.Clear();
-            foreach (var mapping in mappings)
-            {
-                _mappings.Add(mapping.ViewModel, mapping.View);
-            }
+            if (ViewModelLocator.Mappings != null)
+                foreach (var mapping in ViewModelLocator.Mappings)
+                {
+                    _mappings.Add(mapping.ViewModel, mapping.View);
+                }
 
             if (_authenticationService.IsAuthenticated || !checkAuthentication)
             {
-                return InternalNavigateToAsync(LaunchingPage.GetType(), null);
+                return InternalNavigateToAsync(_mappings.First(a=>a.Value==LaunchingPage.GetType()).Key, null);
             }
             else
             {
-                return InternalNavigateToAsync(LoginPage.GetType(), null);
+                return InternalNavigateToAsync(_mappings.First(a => a.Value == LoginPage.GetType()).Key, null);
             }
         }
 

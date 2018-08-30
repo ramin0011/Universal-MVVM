@@ -31,8 +31,11 @@ namespace UniMvvm.ViewModels
 
         public static void Init(List<NavigationMapping> mappings)
         {
-            if(Instance==null)
+            if (Instance == null)
+            {
                 Instance=new ViewModelLocator(mappings);
+                Instance.RegisterViewModels();
+            }
         }
 
        
@@ -50,11 +53,13 @@ namespace UniMvvm.ViewModels
 
             // data services
             _unityContainer.RegisterType<IAuthenticationService, AuthenticationService>();
-
-            // view models
-            mappings.ForEach(a => _unityContainer.RegisterType(a.ViewModel));
         }
 
+        private void RegisterViewModels()
+        {
+            // view models
+            Mappings?.ForEach(a => _unityContainer.RegisterType(a.ViewModel));
+        }
         public T Resolve<T>()
         {
             return _unityContainer.Resolve<T>();
