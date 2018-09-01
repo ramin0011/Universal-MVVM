@@ -7,19 +7,19 @@ namespace UniMvvm.ViewModels.Base
     public abstract class ViewModelBase : ExtendedBindableObject
     {
         private IRequestProvider httProvider;
-        protected IRequestProvider HttProvider
+        public IRequestProvider HttProvider
         {
             get { return httProvider ?? (httProvider = ViewModelLocator.Instance.Resolve<IRequestProvider>()); }
         }
 
         private IDialogService dialogService;
-        protected IDialogService DialogService
+        public IDialogService DialogService
         {
             get { return dialogService ?? (dialogService = ViewModelLocator.Instance.Resolve<IDialogService>()); }
         }
 
         private INavigationService navigationService;
-        protected INavigationService NavigationService
+        public INavigationService NavigationService
         {
             get { return navigationService ?? (navigationService = ViewModelLocator.Instance.Resolve<INavigationService>()); }
         }

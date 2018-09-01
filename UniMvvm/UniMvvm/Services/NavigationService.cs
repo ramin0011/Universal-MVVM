@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using UniMvvm.DataServices.Interfaces;
 using UniMvvm.Pages;
@@ -20,6 +21,7 @@ namespace UniMvvm.Services
     {
         private readonly IAuthenticationService _authenticationService;
         protected readonly Dictionary<Type, Type> _mappings;
+        private INavigationService _navigationServiceImplementation;
         private MasterDetailPage LaunchingPage { get; set; }
         private ContentPage LoginPage { get; set; }
 
@@ -63,7 +65,7 @@ namespace UniMvvm.Services
             return InternalNavigateToAsync(typeof(TViewModel), null);
         }
 
-        public Task NavigateToAsync<TViewModel>(object parameter) where TViewModel : ViewModelBase
+        public Task NavigateToAsync<TViewModel>(params object[] parameter) where TViewModel : ViewModelBase
         {
             return InternalNavigateToAsync(typeof(TViewModel), parameter);
         }
@@ -73,7 +75,7 @@ namespace UniMvvm.Services
             return InternalNavigateToAsync(viewModelType, null);
         }
 
-        public Task NavigateToAsync(Type viewModelType, object parameter)
+        public Task NavigateToAsync(Type viewModelType, params object[] parameter)
         {
             return InternalNavigateToAsync(viewModelType, parameter);
         }
@@ -104,7 +106,7 @@ namespace UniMvvm.Services
             return Task.FromResult(true);
         }
 
-        protected virtual async Task InternalNavigateToAsync(Type viewModelType, object parameter)
+        protected virtual async Task InternalNavigateToAsync(Type viewModelType,params object[] parameter)
         {
             Page page = CreateAndBindPage(viewModelType, parameter);
 
@@ -112,7 +114,7 @@ namespace UniMvvm.Services
             {
                 CurrentApplication.MainPage = page;
             }
-            else if (page.GetType() == this.LoginPage.GetType())
+            else if (page.GetType() == this.LoginPage?.GetType())
             {
                 CurrentApplication.MainPage = new CustomNavigationPage(page);
             }
@@ -160,7 +162,7 @@ namespace UniMvvm.Services
             return _mappings[viewModelType];
         }
 
-        protected Page CreateAndBindPage(Type viewModelType, object parameter)
+        protected Page CreateAndBindPage(Type viewModelType,params object[] parameter)
         {
             Type pageType = GetPageTypeForViewModel(viewModelType);
 
@@ -169,8 +171,20 @@ namespace UniMvvm.Services
                 throw new Exception($"Mapping type for {viewModelType} is not a page");
             }
 
-            var page = Activator.CreateInstance(pageType) as Page;
+            Page page;
+            if(parameter!=null && parameter.Any())
+            {
+                var ctor = pageType.GetConstructor(new[] {parameter[0].GetType()});
+                page=ctor.Invoke(new object[] {parameter.First()}) as Page;
+                //page = Activator.CreateInstance(pageType, BindingFlags.CreateInstance |
+                //                                      BindingFlags.Public |
+                //                                      BindingFlags.Instance |
+                //                                      BindingFlags.OptionalParamBinding, null, parameter) as Page;
+            }
+            else
+                page = Activator.CreateInstance(pageType) as Page;
             var viewModel = ViewModelLocator.Instance.Resolve(viewModelType) ;
+            
             page.BindingContext = viewModel;
 
             return page;

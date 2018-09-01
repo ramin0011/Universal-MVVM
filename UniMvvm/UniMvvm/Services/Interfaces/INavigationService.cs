@@ -12,11 +12,11 @@ namespace UniMvvm.Services.Interfaces
             bool checkAuthentication = false);
         Task NavigateToAsync<TViewModel>() where TViewModel : ViewModelBase;
 
-        Task NavigateToAsync<TViewModel>(object parameter) where TViewModel : ViewModelBase;
+        Task NavigateToAsync<TViewModel>(params object[] parameter) where TViewModel : ViewModelBase;
 
         Task NavigateToAsync(Type viewModelType);
 
-        Task NavigateToAsync(Type viewModelType, object parameter);
+        Task NavigateToAsync(Type viewModelType,params object[] parameter);
 
         Task NavigateBackAsync();
 
