@@ -112,7 +112,9 @@ namespace UniMvvm.Services
 
             if (page.GetType() == this.LaunchingPage.GetType())
             {
-                CurrentApplication.MainPage = page;
+                CurrentApplication.MainPage = new CustomNavigationPage(page)
+                {
+                };
             }
             else if (page.GetType() == this.LoginPage?.GetType())
             {
@@ -129,8 +131,10 @@ namespace UniMvvm.Services
                 }
                 else
                 {
-                    navigationPage = new CustomNavigationPage(page);
-                    mainPage.Detail = navigationPage;
+                    var actionPage = CurrentApplication.MainPage;
+                    if (actionPage.Navigation != null && actionPage.Navigation.NavigationStack.LastOrDefault() !=null)
+                        actionPage = actionPage.Navigation.NavigationStack.Last();
+                    await actionPage.Navigation.PushAsync(page);
                 }
 
                 mainPage.IsPresented = false;
@@ -145,7 +149,10 @@ namespace UniMvvm.Services
                 }
                 else
                 {
-                    CurrentApplication.MainPage = new CustomNavigationPage(page);
+                    var actionPage = CurrentApplication.MainPage;
+                    if (actionPage.Navigation != null && actionPage.Navigation.NavigationStack.LastOrDefault() != null)
+                        actionPage = actionPage.Navigation.NavigationStack.Last();
+                    await actionPage.Navigation.PushAsync(page);
                 }
             }
 
@@ -183,9 +190,10 @@ namespace UniMvvm.Services
             }
             else
                 page = Activator.CreateInstance(pageType) as Page;
+        
             var viewModel = ViewModelLocator.Instance.Resolve(viewModelType) ;
-            
-            page.BindingContext = viewModel;
+            if (page.BindingContext == null)
+                page.BindingContext = viewModel;
 
             return page;
         }

@@ -14,6 +14,7 @@ namespace UniMvvm.Pages
         public CustomNavigationPage(Page root) : base(root)
         {
             InitializeComponent();
+            ToolbarItems.Clear();
         }
     }
 }

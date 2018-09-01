@@ -46,7 +46,7 @@ namespace UniMvvm.ViewModels.Base
         {
         }
 
-        public virtual Task InitializeAsync(object navigationData)
+        public virtual Task InitializeAsync(dynamic navigationData)
         {
             return Task.FromResult(false);
         }

@@ -15,9 +15,9 @@ namespace UniMvvm.Test.Views
         {
             InitializeComponent();
 
-            MasterBehavior = MasterBehavior.Popover;
+            MasterBehavior = MasterBehavior.Default;
 
-            MenuPages.Add((int)MenuItemType.Browse, (NavigationPage)Detail);
+            MenuPages.Add((int)MenuItemType.Browse, new NavigationPage(Detail));
         }
 
         public async Task NavigateFromMenu(int id)

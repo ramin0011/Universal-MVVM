@@ -11,15 +11,22 @@ namespace UniMvvm.Test.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ItemDetailPage : ContentPage
     {
-        ItemDetailViewModel viewModel;
-        private Item Item;
         
         public ItemDetailPage(ItemDetailViewModel viewModel)
         {
             InitializeComponent();
-            this.Item = viewModel.Item;
-            BindingContext = this.viewModel = viewModel;
+            BindingContext =  viewModel;
         }
 
+        public ItemDetailPage()
+        {
+            InitializeComponent();
+            var  vm =new ItemDetailViewModel(new Item()
+            {
+                Text = "hey",
+                Description = "hi"
+            });
+            BindingContext = vm;
+        }
     }
 }

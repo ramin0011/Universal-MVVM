@@ -40,7 +40,7 @@ namespace UniMvvm.Test.Views
 
         async void AddItem_Clicked(object sender, EventArgs e)
         {
-            await ((ItemsViewModel) BindingContext).NavigationService.NavigateToAsync<ItemDetailViewModel>();
+            await ((ItemsViewModel) BindingContext).NavigationService.NavigateToAsync<NewItemVm>();
         }
 
         protected override void OnAppearing()
