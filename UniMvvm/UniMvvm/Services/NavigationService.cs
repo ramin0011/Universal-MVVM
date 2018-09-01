@@ -181,12 +181,21 @@ namespace UniMvvm.Services
             Page page;
             if(parameter!=null && parameter.Any())
             {
-                var ctor = pageType.GetConstructor(new[] {parameter[0].GetType()});
-                page=ctor.Invoke(new object[] {parameter.First()}) as Page;
-                //page = Activator.CreateInstance(pageType, BindingFlags.CreateInstance |
-                //                                      BindingFlags.Public |
-                //                                      BindingFlags.Instance |
-                //                                      BindingFlags.OptionalParamBinding, null, parameter) as Page;
+
+                try
+                {
+                    var ctor = pageType.GetConstructor(new[] { parameter[0].GetType() });
+                    if(ctor!=null)
+                    page = ctor.Invoke(new object[] { parameter.First() }) as Page;
+                    else
+                        // if the page class doesnt have the constructor requested , create the page and pass the parameteres to viewmodel instead
+                        page = Activator.CreateInstance(pageType) as Page;
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+
             }
             else
                 page = Activator.CreateInstance(pageType) as Page;
