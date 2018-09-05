@@ -10,7 +10,7 @@ to use this package you only need to define your own views and viewmodels , view
 
 then we will handle everything for you, we inject your view models to your views and you can call http requests and open dialoge messages on diffrent platforms and navigate to any page you like just via your viewmodels , all configured inside the UniMVVM .
 
-refer the sample app for more info.
+refer to the sample app for more info.
 
 this is the only code you need to call inside your Xamarin app 
 replace this code with the mainpage inside the your App class.
