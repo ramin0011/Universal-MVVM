@@ -16,13 +16,9 @@ namespace UniMvvm.Test.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ItemsPage : ContentPage
     {
-        ItemsViewModel viewModel;
-
         public ItemsPage()
         {
             InitializeComponent();
-
-            BindingContext = viewModel = new ItemsViewModel();
         }
 
         async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
@@ -31,24 +27,19 @@ namespace UniMvvm.Test.Views
             if (item == null)
                 return;
             await ((ItemsViewModel)BindingContext).DialogService.ShowAlertAsync(
-                $"Great you clicked on {item.Description}", item.Text, "ok");
+                $"this is powered by Arc.UserDialogs nuget package ","this is a cross platform dialoge view", "ok");
             await ((ItemsViewModel) BindingContext).NavigationService.NavigateToAsync<ItemDetailViewModel>(new ItemDetailViewModel(item));
-
             // Manually deselect item.
             ItemsListView.SelectedItem = null;
         }
 
-        async void AddItem_Clicked(object sender, EventArgs e)
-        {
-            await ((ItemsViewModel) BindingContext).NavigationService.NavigateToAsync<NewItemVm>();
-        }
-
+     
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
-            if (viewModel.Items.Count == 0)
-                viewModel.LoadItemsCommand.Execute(null);
+            if (((ItemsViewModel) BindingContext).Items.Count == 0)
+                ((ItemsViewModel) BindingContext).LoadItemsCommand.Execute(null);
         }
     }
 }

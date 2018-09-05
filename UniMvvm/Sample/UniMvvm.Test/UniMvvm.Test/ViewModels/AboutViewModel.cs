@@ -9,7 +9,7 @@ namespace UniMvvm.Test.ViewModels
     {
         public AboutViewModel()
         {
-            OpenWebCommand = new Command(() => Device.OpenUri(new Uri("https://xamarin.com/platform")));
+            OpenWebCommand = new Command(() => Device.OpenUri(new Uri("https://github.com/ramin0011/Universal-MVVM")));
         }
 
         public ICommand OpenWebCommand { get; }

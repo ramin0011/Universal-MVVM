@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UniMvvm.Test.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -10,41 +11,25 @@ namespace UniMvvm.Test.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : MasterDetailPage
     {
-        Dictionary<int, NavigationPage> MenuPages = new Dictionary<int, NavigationPage>();
+        Dictionary<int, Type> MenuPages = new Dictionary<int, Type>();
         public MainPage()
         {
             InitializeComponent();
 
             MasterBehavior = MasterBehavior.Default;
 
-            MenuPages.Add((int)MenuItemType.Browse, new NavigationPage(Detail));
+            MenuPages.Add((int)MenuItemType.Browse, typeof(ItemsPage));
+            MenuPages.Add((int)MenuItemType.About, typeof(AboutPage));
         }
 
         public async Task NavigateFromMenu(int id)
         {
-            if (!MenuPages.ContainsKey(id))
-            {
-                switch (id)
-                {
-                    case (int)MenuItemType.Browse:
-                        MenuPages.Add(id, new NavigationPage(new ItemsPage()));
-                        break;
-                    case (int)MenuItemType.About:
-                        MenuPages.Add(id, new NavigationPage(new AboutPage()));
-                        break;
-                }
-            }
-
             var newPage = MenuPages[id];
 
-            if (newPage != null && Detail != newPage)
+            if (newPage != null && Detail.GetType() != newPage)
             {
-                Detail = newPage;
-
-                if (Device.RuntimePlatform == Device.Android)
-                    await Task.Delay(100);
-
-                IsPresented = false;
+                //caling view model directly from view
+                ((MainPageVm) BindingContext).NavigateToPage(newPage);
             }
         }
     }

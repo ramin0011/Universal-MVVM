@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UniMvvm.Helpers;
@@ -31,6 +32,16 @@ namespace UniMvvm
                     Application.Current.Resources.Add(key + "HexString", color.ToHexString());
                 }
             }
+        }
+
+        public void Register<T>(T instance)
+        {
+             ViewModelLocator.Instance.Register<T>(instance);
+        }
+
+        public object Resolve(Type type)
+        {
+           return ViewModelLocator.Instance.Resolve(type);
         }
     }
     public class UniMvvmOptions

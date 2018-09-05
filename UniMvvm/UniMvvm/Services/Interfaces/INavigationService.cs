@@ -15,6 +15,7 @@ namespace UniMvvm.Services.Interfaces
         Task NavigateToAsync<TViewModel>(params object[] parameter) where TViewModel : ViewModelBase;
 
         Task NavigateToAsync(Type viewModelType);
+        Task NavigateToPageAsync(Type pageType);
 
         Task NavigateToAsync(Type viewModelType,params object[] parameter);
 

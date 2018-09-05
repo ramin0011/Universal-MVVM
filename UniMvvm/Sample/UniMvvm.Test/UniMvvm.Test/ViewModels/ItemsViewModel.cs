@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
-
+using System.Windows.Input;
 using Xamarin.Forms;
 
 using UniMvvm.Test.Models;
@@ -17,18 +17,25 @@ namespace UniMvvm.Test.ViewModels
         public ObservableCollection<Item> Items { get; set; }
         public Command LoadItemsCommand { get; set; }
         public MockDataStore DataStore=new MockDataStore();
+
+        public ICommand AddNewItem { get; set; }
         public ItemsViewModel()
         {
-       
+            AddNewItem=new Command(AddNewCommand);
             Items = new ObservableCollection<Item>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
-
-            MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
+            LoadItemsCommand.Execute(null);
+            MessagingCenter.Subscribe<NewItemVm, Item>(this, "AddItem", async (obj, item) =>
             {
                 var newItem = item as Item;
                 Items.Add(newItem);
                 await DataStore.AddItemAsync(newItem);
             });
+        }
+
+        private async void AddNewCommand()
+        {
+            await NavigationService.NavigateToAsync<NewItemVm>();
         }
 
         async Task ExecuteLoadItemsCommand()

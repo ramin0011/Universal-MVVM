@@ -12,28 +12,11 @@ namespace UniMvvm.Test.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class NewItemPage : ContentPage
     {
-        public Item Item { get; set; }
 
         public NewItemPage()
         {
             InitializeComponent();
-
-            Item = new Item
-            {
-                Text = "Item name",
-                Description = "This is an item description."
-            };
         }
 
-        async void Save_Clicked(object sender, EventArgs e)
-        {
-            MessagingCenter.Send(this, "AddItem", Item);
-            await ((NewItemVm)BindingContext).NavigationService.NavigateBackAsync();
-        }
-
-        async void Cancel_Clicked(object sender, EventArgs e)
-        {
-            await ((NewItemVm) BindingContext).NavigationService.NavigateBackAsync();
-        }
     }
 }

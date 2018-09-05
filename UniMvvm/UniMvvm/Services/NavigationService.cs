@@ -14,6 +14,15 @@ namespace UniMvvm.Services
 {
     public class NavigationMapping
     {
+        public NavigationMapping()
+        {
+            
+        }
+        public NavigationMapping(Type view,Type viewModel)
+        {
+            this.View = view;
+            this.ViewModel = viewModel;
+        }
         public Type ViewModel { get; set; }
         public Type View { get; set; }
     }
@@ -74,6 +83,11 @@ namespace UniMvvm.Services
         {
             return InternalNavigateToAsync(viewModelType, null);
         }
+        public Task NavigateToPageAsync(Type pageType)
+        {
+            var viewModelType = GetViewModelTypeForPage(pageType);
+            return InternalNavigateToAsync(viewModelType, null);
+        }
 
         public Task NavigateToAsync(Type viewModelType, params object[] parameter)
         {
@@ -120,10 +134,9 @@ namespace UniMvvm.Services
             {
                 CurrentApplication.MainPage = new CustomNavigationPage(page);
             }
-            else if (CurrentApplication.MainPage.GetType() == this.LaunchingPage.GetType())
+            else if (page is MasterDetailPage)
             {
-                var mainPage = CurrentApplication.MainPage as MasterDetailPage;
-                var navigationPage = mainPage.Detail as CustomNavigationPage;
+                var navigationPage = ((MasterDetailPage) page).Detail as CustomNavigationPage;
 
                 if (navigationPage != null)
                 {
@@ -137,7 +150,7 @@ namespace UniMvvm.Services
                     await actionPage.Navigation.PushAsync(page);
                 }
 
-                mainPage.IsPresented = false;
+                ((MasterDetailPage) page).IsPresented = false;
             }
             else
             {
@@ -159,7 +172,7 @@ namespace UniMvvm.Services
             await (page.BindingContext as ViewModelBase).InitializeAsync(parameter);
         }
 
-        protected Type GetPageTypeForViewModel(Type viewModelType)
+        private Type GetPageTypeForViewModel(Type viewModelType)
         {
             if (!_mappings.ContainsKey(viewModelType))
             {
@@ -167,6 +180,14 @@ namespace UniMvvm.Services
             }
 
             return _mappings[viewModelType];
+        }
+        private Type GetViewModelTypeForPage(Type pageType)
+        {
+            if (!_mappings.ContainsValue(pageType))
+            {
+                throw new KeyNotFoundException($"No map for ${pageType} was found on navigation mappings");
+            }
+            return _mappings.SingleOrDefault(a=>a.Value==pageType).Key;
         }
 
         protected Page CreateAndBindPage(Type viewModelType,params object[] parameter)
@@ -179,14 +200,13 @@ namespace UniMvvm.Services
             }
 
             Page page;
-            if(parameter!=null && parameter.Any())
+            if (parameter != null && parameter.Any())
             {
-
                 try
                 {
-                    var ctor = pageType.GetConstructor(new[] { parameter[0].GetType() });
-                    if(ctor!=null)
-                    page = ctor.Invoke(new object[] { parameter.First() }) as Page;
+                    var ctor = pageType.GetConstructor(new[] {parameter[0].GetType()});
+                    if (ctor != null)
+                        page = ctor.Invoke(new object[] {parameter.First()}) as Page;
                     else
                         // if the page class doesnt have the constructor requested , create the page and pass the parameteres to viewmodel instead
                         page = Activator.CreateInstance(pageType) as Page;
@@ -195,14 +215,29 @@ namespace UniMvvm.Services
                 {
                     throw e;
                 }
-
             }
             else
                 page = Activator.CreateInstance(pageType) as Page;
-        
-            var viewModel = ViewModelLocator.Instance.Resolve(viewModelType) ;
+
+            var viewModel = ViewModelLocator.Instance.Resolve(viewModelType);
             if (page.BindingContext == null)
                 page.BindingContext = viewModel;
+
+            if (page is MasterDetailPage)
+            {
+                (page as MasterDetailPage).Detail.BindingContext =
+                    ViewModelLocator.Instance.Resolve(GetViewModelTypeForPage((page as MasterDetailPage).Detail.GetType()));
+                (page as MasterDetailPage).Master.BindingContext =
+                    ViewModelLocator.Instance.Resolve(GetViewModelTypeForPage((page as MasterDetailPage).Master.GetType()));
+            }
+            if (page is TabbedPage)
+            {
+                for (var index = 0; index < (page as TabbedPage).Children.Count; index++)
+                {
+                   (page as TabbedPage).Children[index].BindingContext=
+                       ViewModelLocator.Instance.Resolve(GetViewModelTypeForPage((page as TabbedPage).Children[index].GetType()));
+                }
+            }
 
             return page;
         }

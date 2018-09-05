@@ -167,6 +167,10 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.5" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\UniMvvm\UniMvvm.csproj">
+      <Project>{6bb139ef-e9a3-4855-82a5-6ff175491184}</Project>
+      <Name>UniMvvm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UniMvvm.Test\UniMvvm.Test.csproj">
       <Project>{46743B89-F201-432C-BDBC-B28B4A675D72}</Project>
       <Name>UniMvvm.Test</Name>

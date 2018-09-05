@@ -23,6 +23,7 @@ namespace UniMvvm.Test
                 Mappings = new List<NavigationMapping>()
                 {
                     new NavigationMapping(){View = typeof(MainPage),ViewModel = typeof(MainPageVm)},
+                    new NavigationMapping(){View = typeof(MenuPage),ViewModel = typeof(MenuViewVm)},
                     new NavigationMapping(){View = typeof(AboutPage),ViewModel = typeof(AboutViewModel)},
                     new NavigationMapping(){View = typeof(ItemDetailPage),ViewModel = typeof(ItemDetailViewModel)},
                     new NavigationMapping(){View = typeof(ItemsPage),ViewModel = typeof(ItemsViewModel)},
