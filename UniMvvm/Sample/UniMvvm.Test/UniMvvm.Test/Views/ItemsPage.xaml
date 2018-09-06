@@ -1,45 +1,42 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMvvm.Test.Views.ItemsPage"
-             Title="{Binding Title}"
+              Title="{Binding Title}"
              x:Name="BrowseItemsPage">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddNewItem}">
             <ToolbarItem.Icon>
                 <OnPlatform x:TypeArguments="FileImageSource">
-                    <On Platform="UWP" Value="add.png" />
+                    <On Platform="UWP" Value="add.png"/>
                 </OnPlatform>
             </ToolbarItem.Icon>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
 
-    <StackLayout BackgroundColor="DarkCyan">
-        <Label HorizontalTextAlignment="Center" TextColor="White" FontSize="Large" Margin="0,0,0,5">To Do List - this sample app is only designed to demonstrate the usage of UniMVVM package.</Label>
+    <StackLayout >
+        <Label HorizontalTextAlignment="Center" FontSize="Large" Margin="0,0,0,5">To Do List - this sample app is only designed to demonstrate the usage of UniMVVM package.</Label>
         <ListView x:Name="ItemsListView"
-                  ItemsSource="{Binding Items}"
-                  VerticalOptions="FillAndExpand"
-                  HasUnevenRows="true"
-                  RefreshCommand="{Binding LoadItemsCommand}"
-                  IsPullToRefreshEnabled="true"
-                  IsRefreshing="{Binding IsBusy, Mode=OneWay}"
-                  CachingStrategy="RecycleElement"
-                  ItemSelected="OnItemSelected">
+                ItemsSource="{Binding Items}"
+                VerticalOptions="FillAndExpand"
+                HasUnevenRows="true"
+                RefreshCommand="{Binding LoadItemsCommand}"
+                IsPullToRefreshEnabled="true"
+                IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+                CachingStrategy="RecycleElement"
+                ItemSelected="OnItemSelected">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <StackLayout Padding="10">
-                            <Label Text="{Binding Text}"
-                                   TextColor="White"
-                                   LineBreakMode="NoWrap"
-                                   Style="{DynamicResource ListItemTextStyle}"
-                                   FontSize="16" />
-                            <Label Text="{Binding Description}"
-                                   TextColor="White"
-                                   LineBreakMode="NoWrap"
-                                   Style="{DynamicResource ListItemDetailTextStyle}"
-                                   FontSize="13" />
+                            <Label Text="{Binding Text}" 
+                                LineBreakMode="NoWrap" 
+                                Style="{DynamicResource ListItemTextStyle}" 
+                                FontSize="16" />
+                            <Label Text="{Binding Description}" 
+                                LineBreakMode="NoWrap"
+                                Style="{DynamicResource ListItemDetailTextStyle}"
+                                FontSize="13" />
                         </StackLayout>
                     </ViewCell>
                 </DataTemplate>
