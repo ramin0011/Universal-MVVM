@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -40,15 +41,35 @@ namespace UniMvvm.DataServices.Base
 
         public async Task<TResult> PostAsync<TRequest, TResult>(string uri, TRequest data)
         {
-            var httpClient = CreateHttpClient;
-            string serialized = await Task.Run(() => JsonConvert.SerializeObject(data, _serializerSettings));
-            var response = await httpClient.PostAsync(uri, new StringContent(serialized, Encoding.UTF8, "application/json"));
+            string serialized = JsonConvert.SerializeObject(data, _serializerSettings);
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(uri);
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
 
-            await HandleResponse(response);
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = serialized;
+                    
+                await streamWriter.WriteAsync(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
 
-            string responseData = await response.Content.ReadAsStringAsync();
-
-            return await Task.Run(() => JsonConvert.DeserializeObject<TResult>(responseData, _serializerSettings));
+            try
+            {
+                using (var httpResponse = await httpWebRequest.GetResponseAsync())
+                {
+                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                    {
+                        var result =streamReader.ReadToEnd();
+                        return JsonConvert.DeserializeObject<TResult>(result, _serializerSettings);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return JsonConvert.DeserializeObject<TResult>("");
+            }
         }
 
         public Task<TResult> PutAsync<TResult>(string uri, TResult data)

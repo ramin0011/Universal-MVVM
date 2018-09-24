@@ -10,5 +10,14 @@ namespace UniMvvm.Services
         {
             return UserDialogs.Instance.AlertAsync(message, title, okText: okText);
         }
+        public Task ActionSheetAsync(string title, string cancel, string destructive)
+        {
+            return UserDialogs.Instance.ActionSheetAsync(title,cancel,destructive);
+        }
+
+        public IUserDialogs GetInstance()
+        {
+            return UserDialogs.Instance;
+        }
     }
 }

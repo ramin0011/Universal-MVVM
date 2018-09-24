@@ -185,7 +185,7 @@ namespace UniMvvm.Services
         {
             if (!_mappings.ContainsValue(pageType))
             {
-                throw new KeyNotFoundException($"No map for ${pageType} was found on navigation mappings");
+                throw new Exception($"No map for ${pageType} was found on navigation mappings");
             }
             return _mappings.SingleOrDefault(a=>a.Value==pageType).Key;
         }
@@ -225,11 +225,25 @@ namespace UniMvvm.Services
 
             if (page is MasterDetailPage)
             {
-                (page as MasterDetailPage).Detail.BindingContext =
-                    ViewModelLocator.Instance.Resolve(GetViewModelTypeForPage((page as MasterDetailPage).Detail.GetType()));
+                var detailPageType = (page as MasterDetailPage).Detail.GetType();
+                if (detailPageType == typeof(Xamarin.Forms.TabbedPage))
+                {
+                    var tabbedPage = ((TabbedPage)(page as MasterDetailPage).Detail);
+                    for (var index = 0; index < tabbedPage?.Children?.Count; index++)
+                    {
+                        tabbedPage.Children[index].BindingContext =
+                            ViewModelLocator.Instance.Resolve(GetViewModelTypeForPage(tabbedPage.Children[index].GetType()));
+                    }
+                }
+                else
+                {
+                     (page as MasterDetailPage).Detail.BindingContext =
+                    ViewModelLocator.Instance.Resolve(GetViewModelTypeForPage(detailPageType));
+                }
                 (page as MasterDetailPage).Master.BindingContext =
                     ViewModelLocator.Instance.Resolve(GetViewModelTypeForPage((page as MasterDetailPage).Master.GetType()));
             }
+
             if (page is TabbedPage)
             {
                 for (var index = 0; index < (page as TabbedPage).Children.Count; index++)

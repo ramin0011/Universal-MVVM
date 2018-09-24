@@ -15,7 +15,7 @@ namespace UniMvvm
         public static Task Run(UniMvvmOptions options)
         {
             GlobalSettings.AuthenticationEndpoint = options.AuthenticationEndpoint;
-            ViewModelLocator.Init(options.Mappings);
+            ViewModelLocator.Init(options.Mappings,options.Services);
             var navigationService = ViewModelLocator.Instance.Resolve<INavigationService>();
             return navigationService.InitializeAsync(options.MainPage,options.LoginPage,options.CheckAuthentication);
         }
@@ -34,12 +34,17 @@ namespace UniMvvm
             }
         }
 
-        public void Register<T>(T instance)
+        public static void Register<T>(T instance)
         {
              ViewModelLocator.Instance.Register<T>(instance);
         }
 
-        public object Resolve(Type type)
+        public static void Register<TInterface, T>() where T : TInterface
+        {
+             ViewModelLocator.Instance.Register<TInterface,T>();
+        }
+
+        public static object Resolve(Type type)
         {
            return ViewModelLocator.Instance.Resolve(type);
         }
@@ -47,6 +52,7 @@ namespace UniMvvm
     public class UniMvvmOptions
     {
         public List<NavigationMapping> Mappings { get; set; }
+        public Dictionary<Type,Type> Services { get; set; }
         public MasterDetailPage MainPage { get; set; }
         public ContentPage LoginPage { get; set; }
         public bool CheckAuthentication { get; set; }= false;

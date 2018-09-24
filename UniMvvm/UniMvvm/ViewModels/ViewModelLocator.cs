@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UniMvvm.DataServices;
 using UniMvvm.DataServices.Base;
 using UniMvvm.DataServices.Interfaces;
@@ -29,17 +30,21 @@ namespace UniMvvm.ViewModels
             private set { _instance = value; }
         }
 
-        public static void Init(List<NavigationMapping> mappings)
+        public static void Init(List<NavigationMapping> mappings, Dictionary<Type, Type> optionsServices)
         {
             if (Instance == null)
             {
                 Instance=new ViewModelLocator(mappings);
                 Instance.RegisterViewModels();
+                for (var index = 0; index < optionsServices.Count; index++)
+                {
+                    Instance.Register(optionsServices.Keys.ToList()[index],optionsServices.Values.ToList()[index]);
+                }
             }
         }
 
        
-        protected ViewModelLocator(List<NavigationMapping> mappings)
+        private ViewModelLocator(List<NavigationMapping> mappings)
         {
             Mappings = mappings;
             _unityContainer = new UnityContainer();
@@ -78,6 +83,10 @@ namespace UniMvvm.ViewModels
         public void Register<TInterface, T>() where T : TInterface
         {
             _unityContainer.RegisterType<TInterface, T>();
+        }
+        public void Register(Type from,Type to) 
+        {
+            _unityContainer.RegisterType(from,to);
         }
 
         public void RegisterSingleton<TInterface, T>() where T : TInterface
