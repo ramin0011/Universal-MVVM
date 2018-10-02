@@ -8,7 +8,7 @@ namespace UniMvvm.Services.Interfaces
 {
     public interface INavigationService
     {
-        Task InitializeAsync(MasterDetailPage mainPage, ContentPage loginPage,
+        Task InitializeAsync(Page mainPage, ContentPage loginPage,
             bool checkAuthentication = false);
         Task NavigateToAsync<TViewModel>() where TViewModel : ViewModelBase;
 

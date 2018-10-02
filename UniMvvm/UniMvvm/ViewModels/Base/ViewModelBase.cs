@@ -36,14 +36,19 @@ namespace UniMvvm.ViewModels.Base
             set
             {
                 _isBusy = value;
+                IsNotBusy = !_isBusy;
                 RaisePropertyChanged(() => IsBusy);
+                RaisePropertyChanged(()=>IsNotBusy);
             }
         }
+        public bool IsNotBusy { get; set; }
 
-       
+
 
         public ViewModelBase()
         {
+            IsBusy = false;
+            IsNotBusy = true;
         }
 
         public virtual Task InitializeAsync(object navigationData)

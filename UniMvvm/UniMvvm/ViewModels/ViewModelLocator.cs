@@ -30,15 +30,15 @@ namespace UniMvvm.ViewModels
             private set { _instance = value; }
         }
 
-        public static void Init(List<NavigationMapping> mappings, Dictionary<Type, Type> optionsServices)
+        public static void Init(List<NavigationMapping> mappings, Dictionary<Type, Type> services)
         {
             if (Instance == null)
             {
                 Instance=new ViewModelLocator(mappings);
                 Instance.RegisterViewModels();
-                for (var index = 0; index < optionsServices.Count; index++)
+                for (var index = 0; index < services.Count; index++)
                 {
-                    Instance.Register(optionsServices.Keys.ToList()[index],optionsServices.Values.ToList()[index]);
+                    Instance.Register(services.Keys.ToList()[index],services.Values.ToList()[index],new ContainerControlledLifetimeManager() );
                 }
             }
         }
@@ -72,7 +72,14 @@ namespace UniMvvm.ViewModels
 
         public object Resolve(Type type)
         {
-            return _unityContainer.Resolve(type);
+            try
+            {
+                return _unityContainer.Resolve(type);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         public void Register<T>(T instance)
@@ -84,9 +91,14 @@ namespace UniMvvm.ViewModels
         {
             _unityContainer.RegisterType<TInterface, T>();
         }
-        public void Register(Type from,Type to) 
+        public void Register(Type from,Type to)
         {
+         
             _unityContainer.RegisterType(from,to);
+        }
+        public void Register(Type @from, Type to, LifetimeManager lifeltime)
+        {
+            _unityContainer.RegisterType(from,to, lifeltime);
         }
 
         public void RegisterSingleton<TInterface, T>() where T : TInterface

@@ -53,7 +53,7 @@ namespace UniMvvm
     {
         public List<NavigationMapping> Mappings { get; set; }
         public Dictionary<Type,Type> Services { get; set; }
-        public MasterDetailPage MainPage { get; set; }
+        public Page MainPage { get; set; }
         public ContentPage LoginPage { get; set; }
         public bool CheckAuthentication { get; set; }= false;
         public string AuthenticationEndpoint { get; set; }

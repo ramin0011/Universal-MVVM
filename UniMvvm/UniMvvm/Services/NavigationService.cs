@@ -31,7 +31,7 @@ namespace UniMvvm.Services
         private readonly IAuthenticationService _authenticationService;
         protected readonly Dictionary<Type, Type> _mappings;
         private INavigationService _navigationServiceImplementation;
-        private MasterDetailPage LaunchingPage { get; set; }
+        private Page LaunchingPage { get; set; }
         private ContentPage LoginPage { get; set; }
 
         protected Application CurrentApplication
@@ -47,7 +47,7 @@ namespace UniMvvm.Services
             CreateMessengerSubscriptions();
         }
 
-        public Task InitializeAsync(MasterDetailPage mainPage,ContentPage loginPage,bool checkAuthentication=false)
+        public Task InitializeAsync(Page mainPage,ContentPage loginPage,bool checkAuthentication=false)
         {
             this.LaunchingPage = mainPage;
             this.LoginPage = loginPage;
