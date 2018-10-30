@@ -6,7 +6,6 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
-using ImageCircle.Forms.Plugin.Droid;
 
 namespace UniMvvm.Test.Droid
 {
@@ -20,7 +19,6 @@ namespace UniMvvm.Test.Droid
 
             base.OnCreate(savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            ImageCircleRenderer.Init();
             UserDialogs.Init(this);
             LoadApplication(new App());
         }

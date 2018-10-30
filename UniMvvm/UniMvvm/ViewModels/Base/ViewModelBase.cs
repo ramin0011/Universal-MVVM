@@ -41,7 +41,7 @@ namespace UniMvvm.ViewModels.Base
                 RaisePropertyChanged(()=>IsNotBusy);
             }
         }
-        public bool IsNotBusy { get; set; }
+        public bool IsNotBusy { get; private set; }
 
 
 

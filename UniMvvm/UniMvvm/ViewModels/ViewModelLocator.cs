@@ -36,6 +36,7 @@ namespace UniMvvm.ViewModels
             {
                 Instance=new ViewModelLocator(mappings);
                 Instance.RegisterViewModels();
+                if(services!=null)
                 for (var index = 0; index < services.Count; index++)
                 {
                     Instance.Register(services.Keys.ToList()[index],services.Values.ToList()[index],new ContainerControlledLifetimeManager() );
