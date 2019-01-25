@@ -11,7 +11,7 @@ using Unity.Lifetime;
 
 namespace UniMvvm.ViewModels
 {
-    internal class ViewModelLocator
+    public class ViewModelLocator
     {
         private ViewModelLocator()
         {

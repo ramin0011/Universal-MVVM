@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -26,6 +27,8 @@ namespace UniMvvm.DataServices.Base
             _serializerSettings.Converters.Add(new StringEnumConverter());
         }
 
+     
+
         private static HttpClient _httpClient;
         private HttpClient CreateHttpClient
         {
@@ -40,20 +43,36 @@ namespace UniMvvm.DataServices.Base
                 return _httpClient;
             }
         }
-        public async Task<TResult> GetAsync<TResult>(string uri)
+
+        public HttpClient AddHeaders(HttpClient client,Dictionary<string, string> headers)
         {
-            var response = await CreateHttpClient.GetAsync(uri);
+            if (headers == null)
+                return client;
+            else
+                foreach (var header in headers)
+                {
+                    if(header.Key.Equals("Authorization",StringComparison.InvariantCultureIgnoreCase))
+                        client.DefaultRequestHeaders.Authorization=new AuthenticationHeaderValue("Bearer", header.Value);
+                    else
+                    client.DefaultRequestHeaders.Add(header.Key, new[] { header.Value });
+                }
+            return client;
+        }
+
+        public async Task<TResult> GetAsync<TResult>(string uri, Dictionary<string, string> headers=null)
+        {
+            var response = await AddHeaders(CreateHttpClient,headers).GetAsync(uri);
             await HandleResponse(response);
             TResult result = JsonConvert.DeserializeObject<TResult>(await response.Content.ReadAsStringAsync(), _serializerSettings);
             return result;
         }
 
-        public Task<TResult> PostAsync<TResult>(string uri, TResult data) => PostAsync<TResult, TResult>(uri, data);
+        public Task<TResult> PostAsync<TResult>(string uri, TResult data, Dictionary<string, string> headers=null) => PostAsync<TResult, TResult>(uri, data,headers);
 
-        public async Task<TResult> PostAsync<TRequest, TResult>(string uri, TRequest data)
+        public async Task<TResult> PostAsync<TRequest, TResult>(string uri, TRequest data, Dictionary<string, string> headers=null)
         {
             var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
-            var res = await CreateHttpClient.PostAsync(uri, content);
+            var res = await AddHeaders(CreateHttpClient, headers).PostAsync(uri, content);
             return JsonConvert.DeserializeObject<TResult>(await res.Content.ReadAsStringAsync(), _serializerSettings);         
         }
 
